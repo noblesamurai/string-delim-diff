@@ -1,0 +1,33 @@
+{
+  "name": "string-delim-diff",
+  "version": "1.0.0",
+  "description": "Takes two arrays of strings, differently delimited (but identical otherwise) and gives you the mapping between them.",
+  "main": "index.js",
+  "scripts": {
+    "test": "node_modules/.bin/mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/timothyleslieallen/string-delim-diff"
+  },
+  "keywords": [
+    "strings",
+    "delimit",
+    "delimiting",
+    "delimited",
+    "map",
+    "string"
+  ],
+  "author": "Andrew Harris <andrew@noblesamurai.com>",
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/timothyleslieallen/string-delim-diff/issues"
+  },
+  "dependencies": {
+    "string": "^3.3.1"
+  },
+  "devDependencies": {
+    "expect.js": "^0.3.1",
+    "mocha": "^2.3.4"
+  }
+}
