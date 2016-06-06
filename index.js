@@ -39,9 +39,11 @@ module.exports = function(strings, toStrings) {
 };
 
 function sanitize(text) {
-  return S(text).stripTags().decodeHTMLEntities().collapseWhitespace().s;
+  return S(text || '').stripTags().decodeHTMLEntities().collapseWhitespace().s;
 }
 function splitIntoWords(text) {
-  return sanitize(text).split(/\s+/);
+  text = sanitize(text);
+  if (!text.length) return []; // return empty array if empty string.
+  return text.split(/\s+/);
 }
 
