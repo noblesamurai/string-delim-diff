@@ -1,6 +1,6 @@
 {
   "name": "string-delim-diff",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Takes two arrays of strings, differently delimited (but identical otherwise) and gives you the mapping between them.",
   "main": "index.js",
   "scripts": {
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/timothyleslieallen/string-delim-diff"
+    "url": "https://github.com/noblesamurai/string-delim-diff"
   },
   "keywords": [
     "strings",
@@ -21,7 +21,7 @@
   "author": "Andrew Harris <andrew@noblesamurai.com>",
   "license": "BSD-3-Clause",
   "bugs": {
-    "url": "https://github.com/timothyleslieallen/string-delim-diff/issues"
+    "url": "https://github.com/noblesamurai/string-delim-diff/issues"
   },
   "dependencies": {
     "string": "^3.3.1"
