@@ -28,20 +28,22 @@ module.exports = function(strings, toStrings) {
         stringWordCount = stringWordCounts.shift(),
         segments = [];
     while (stringWordCounts.length && stringWordCount < words.length) {
-      if (stringWordCount) segments.push(words.splice(0, stringWordCount).join(' '));
+      segments.push(stringWordCount ? words.splice(0, stringWordCount).join(' ') : '');
       stringWordCount = stringWordCounts.shift();
     }
     stringWordCount -= words.length;
-    stringWordCounts.unshift(stringWordCount);
+    if (stringWordCount) stringWordCounts.unshift(stringWordCount);
     segments.push(words.join(' '));
     return map.concat([{ segments: segments, more: Boolean(stringWordCount) }]);
   }, []);
 };
 
 function sanitize(text) {
-  return S(text).stripTags().decodeHTMLEntities().collapseWhitespace().s;
+  return S(text || '').stripTags().decodeHTMLEntities().collapseWhitespace().s;
 }
 function splitIntoWords(text) {
-  return sanitize(text).split(/\s+/);
+  text = sanitize(text);
+  if (!text.length) return []; // return empty array if empty string.
+  return text.split(/\s+/);
 }
 
