@@ -16,7 +16,7 @@ describe('lib/map', function() {
   it('should work with an empty value in the array', function() {
     var out = map(['', 'a', 'b c', 'd e f'], ['a b c', 'd e', 'f']);
     expect(out).to.eql([
-      { segments: ['a', 'b c'], more: false },
+      { segments: ['', 'a', 'b c'], more: false },
       { segments: ['d e'], more: true },
       { segments: ['f'], more: false }
     ]);
@@ -24,7 +24,7 @@ describe('lib/map', function() {
     var out = map(['a', 'b c', null, 'd e f'], ['a b c', 'd e', 'f']);
     expect(out).to.eql([
       { segments: ['a', 'b c'], more: false },
-      { segments: ['d e'], more: true },
+      { segments: ['', 'd e'], more: true },
       { segments: ['f'], more: false }
     ]);
   });

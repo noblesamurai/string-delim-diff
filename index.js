@@ -28,11 +28,11 @@ module.exports = function(strings, toStrings) {
         stringWordCount = stringWordCounts.shift(),
         segments = [];
     while (stringWordCounts.length && stringWordCount < words.length) {
-      if (stringWordCount) segments.push(words.splice(0, stringWordCount).join(' '));
+      segments.push(stringWordCount ? words.splice(0, stringWordCount).join(' ') : '');
       stringWordCount = stringWordCounts.shift();
     }
     stringWordCount -= words.length;
-    stringWordCounts.unshift(stringWordCount);
+    if (stringWordCount) stringWordCounts.unshift(stringWordCount);
     segments.push(words.join(' '));
     return map.concat([{ segments: segments, more: Boolean(stringWordCount) }]);
   }, []);
