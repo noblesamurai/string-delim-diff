@@ -2,7 +2,7 @@
 
 Takes two arrays of strings, differently delimited (but identical otherwise) and gives you the mapping between them.
 
-[![build status](https://secure.travis-ci.org/timothyleslieallen/string-delim-diff.png)](http://travis-ci.org/timothyleslieallen/string-delim-diff)
+[![build status](https://secure.travis-ci.org/noblesamurai/string-delim-diff.png)](http://travis-ci.org/noblesamurai/string-delim-diff)
 
 ## Installation
 
