@@ -32,8 +32,18 @@ module.exports = function(strings, toStrings) {
       stringWordCount = stringWordCounts.shift();
     }
     stringWordCount -= words.length;
-    if (stringWordCount) stringWordCounts.unshift(stringWordCount);
     segments.push(words.join(' '));
+    // if words remaining, push back onto the start of the word counts list
+    if (stringWordCount) {
+      stringWordCounts.unshift(stringWordCount);
+    // otherwise, check and add any empty entrys to the end of the current segment
+    // before we continue.
+    } else {
+      while (stringWordCounts.length && stringWordCounts[0] === 0) {
+        segments.push('');
+        stringWordCounts.shift();
+      }
+    }
     return map.concat([{ segments: segments, more: Boolean(stringWordCount) }]);
   }, []);
 };
