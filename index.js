@@ -49,7 +49,7 @@ module.exports = function(strings, toStrings) {
 };
 
 function sanitize(text) {
-  return S(text || '').stripTags().decodeHTMLEntities().collapseWhitespace().s;
+  return S(text || '').stripTags().decodeHTMLEntities().trim().collapseWhitespace().s;
 }
 function splitIntoWords(text) {
   text = sanitize(text);
