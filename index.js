@@ -16,7 +16,10 @@ var S = require('string');
  */
 module.exports = function(strings, toStrings) {
   // validate that string matches toStrings in the first place.
-  if (sanitize(strings.join(' ')) != sanitize(toStrings.join(' '))) {
+  var one = strings.map(function(s){ return sanitize(s).replace(/ /g, '');}).join(''),
+      two = toStrings.map(function(s){ return sanitize(s).replace(/ /g, '');}).join('');
+
+  if ( one != two) {
     return false;
   }
 
@@ -49,11 +52,11 @@ module.exports = function(strings, toStrings) {
 };
 
 function sanitize(text) {
-  return S(text || '').stripTags().decodeHTMLEntities().trim().collapseWhitespace().s;
+  return S(text || '').stripTags().decodeHTMLEntities().collapseWhitespace().s;
 }
 function splitIntoWords(text) {
   text = sanitize(text);
   if (!text.length) return []; // return empty array if empty string.
-  return text.split(/\s+/);
+  return text.split(/[\s\.]+/).filter(function(s) { return s.length; });
 }
 
