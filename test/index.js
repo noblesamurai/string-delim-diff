@@ -35,4 +35,11 @@ describe('lib/map', function() {
       { segments: ['f'], more: false }
     ]);
   });
+  it('should handle differences in whitespace', function() {
+    var out = map(['Hello Bob ...', 'You are great.'], ['Hello Bob', '...You are great.']);
+    expect(out).to.eql([
+      { segments: ['Hello Bob'], more: true },
+      { segments: ['...', 'You are great.'], more: false }
+    ]);
+  });
 });
