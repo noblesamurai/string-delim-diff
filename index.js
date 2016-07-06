@@ -49,7 +49,13 @@ module.exports = function(strings, toStrings) {
 };
 
 function sanitize(text) {
-  return S(text || '').stripTags().decodeHTMLEntities().collapseWhitespace().s;
+  // convert any html to plain text
+  text = S(text || '').stripTags().decodeHTMLEntities().s;
+  // replace all punctuation with a space (punctuation still denotes a gap).
+  // Note: we don't want to remove ''s which are in some words in the htk dictionary.
+  text = text.replace(/[^\w\s']/g, ' ');
+  // collapse white space
+  return S(text).collapseWhitespace().s;
 }
 function splitIntoWords(text) {
   text = sanitize(text);
