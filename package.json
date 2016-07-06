@@ -1,6 +1,6 @@
 {
   "name": "string-delim-diff",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "Takes two arrays of strings, differently delimited (but identical otherwise) and gives you the mapping between them.",
   "main": "index.js",
   "scripts": {
