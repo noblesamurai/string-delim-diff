@@ -1,5 +1,3 @@
-var S = require('string');
-
 /**
  * Map one array of strings onto another array of strings.
  *
@@ -49,17 +47,15 @@ module.exports = function(strings, toStrings) {
 };
 
 function sanitize(text) {
-  // convert any html to plain text
-  text = S(text || '').stripTags().decodeHTMLEntities().s;
   // replace all punctuation with a space (punctuation still denotes a gap).
   // Note: we don't want to remove ''s which are in some words in the htk dictionary.
-  text = text.replace(/[^\w\s']/g, ' ');
-  // collapse white space
-  return S(text).collapseWhitespace().s;
+  return (text || '').replace(/[^\w\s']/g, ' ')
+    .replace(/\s+/g, ' ') // collapse whitespace
+    .replace(/^\s|\s$/g, ''); // and trim
 }
+
 function splitIntoWords(text) {
   text = sanitize(text);
   if (!text.length) return []; // return empty array if empty string.
   return text.split(/\s+/);
 }
-

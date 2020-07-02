@@ -23,11 +23,9 @@
   "bugs": {
     "url": "https://github.com/noblesamurai/string-delim-diff/issues"
   },
-  "dependencies": {
-    "string": "^3.3.1"
-  },
+  "dependencies": {},
   "devDependencies": {
     "expect.js": "^0.3.1",
-    "mocha": "^2.3.4"
+    "mocha": "^8.0.1"
   }
 }
