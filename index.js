@@ -12,19 +12,19 @@
  *
  * Returns false if strings cannot be mapped onto toStrings.
  */
-module.exports = function(strings, toStrings) {
+module.exports = function (strings, toStrings) {
   // validate that string matches toStrings in the first place.
-  if (sanitize(strings.join(' ')) != sanitize(toStrings.join(' '))) {
+  if (sanitize(strings.join(' ')) !== sanitize(toStrings.join(' '))) {
     return false;
   }
 
-  var stringWordCounts = strings.map(function(string) {
+  const stringWordCounts = strings.map(function (string) {
     return splitIntoWords(string).length;
   });
-  return toStrings.reduce(function(map, toString) {
-    var words = splitIntoWords(toString),
-        stringWordCount = stringWordCounts.shift(),
-        segments = [];
+  return toStrings.reduce(function (map, toString) {
+    const words = splitIntoWords(toString);
+    let stringWordCount = stringWordCounts.shift();
+    const segments = [];
     while (stringWordCounts.length && stringWordCount < words.length) {
       segments.push(stringWordCount ? words.splice(0, stringWordCount).join(' ') : '');
       stringWordCount = stringWordCounts.shift();
@@ -46,7 +46,7 @@ module.exports = function(strings, toStrings) {
   }, []);
 };
 
-function sanitize(text) {
+function sanitize (text) {
   // replace all punctuation with a space (punctuation still denotes a gap).
   // Note: we don't want to remove ''s which are in some words in the htk dictionary.
   return (text || '').replace(/[^\w\s']/g, ' ')
@@ -54,7 +54,7 @@ function sanitize(text) {
     .replace(/^\s|\s$/g, ''); // and trim
 }
 
-function splitIntoWords(text) {
+function splitIntoWords (text) {
   text = sanitize(text);
   if (!text.length) return []; // return empty array if empty string.
   return text.split(/\s+/);
