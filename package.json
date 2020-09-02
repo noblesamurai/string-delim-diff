@@ -4,8 +4,8 @@
   "description": "Takes two arrays of strings, differently delimited (but identical otherwise) and gives you the mapping between them.",
   "main": "index.js",
   "scripts": {
-    "pretest": "semistandard --env mocha",
-    "test": "mocha"
+    "pretest": "xo",
+    "test": "mocha --recursive test"
   },
   "repository": {
     "type": "git",
@@ -24,12 +24,22 @@
   "bugs": {
     "url": "https://github.com/noblesamurai/string-delim-diff/issues"
   },
-  "dependencies": {},
   "devDependencies": {
     "chai": "^4.2.0",
     "dirty-chai": "^2.0.1",
+    "eslint-config-semistandard": "^15.0.1",
+    "eslint-config-standard": "^14.1.1",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-standard": "^4.0.1",
     "expect.js": "^0.3.1",
     "mocha": "^8.0.1",
-    "semistandard": "^14.2.2"
+    "xo": "^0.33.1"
+  },
+  "xo": {
+    "env": "mocha",
+    "extends": "semistandard"
+  },
+  "dependencies": {
+    "lodash.last": "^3.0.0"
   }
 }
