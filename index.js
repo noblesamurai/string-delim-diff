@@ -1,5 +1,4 @@
 const last = require('lodash.last');
-const sanitize = require('./lib/sanitize');
 
 /**
  * Map one array of strings onto another array of strings.
@@ -15,83 +14,62 @@ const sanitize = require('./lib/sanitize');
  *
  * Returns false if strings cannot be mapped onto toStrings.
  */
-module.exports = function (strings, toStrings) {
-  // Validate that string matches toStrings in the first place.
-  if (
-    strings.join('').replace(/\s+/g, '') !==
-    toStrings.join('').replace(/\s+/g, '')
-  ) return false;
+function appendToLast (strings, char) {
+  strings[strings.length - 1] += char;
+}
 
-  const stringWordCounts = strings.map(string => {
-    return splitIntoWords(string).length;
-  });
-  // eslint-disable-next-line unicorn/no-reduce
-  return toStrings.reduce((map, toString) => {
-    const words = splitIntoWords(toString);
-    console.log({ words });
-    let stringWordCount = stringWordCounts.shift();
-    const segments = [];
-    while (stringWordCounts.length && stringWordCount < words.length) {
-      segments.push(stringWordCount ? words.splice(0, stringWordCount).join(' ') : '');
-      stringWordCount = stringWordCounts.shift();
+/**
+ * Should return false if toString can't be made from some prefix of strings.
+ */
+function getSegment (strings, toString) {
+  let string1 = '';
+  toString = toString.split('');
+  const mapping = [];
+
+  // Go through and match up between the strings/string
+  while (toString.length > 0) {
+    // Move on to next string1 if required.
+    while (strings.length > 0 && string1.length === 0) {
+      string1 = (strings.shift() || '').split(''); // Sometimes can get null in the array
+      mapping.push('');
     }
 
-    stringWordCount -= words.length;
-    segments.push(words.join(' '));
-    // If words remaining, push back onto the start of the word counts list
-    console.log({ stringWordCount });
-    if (stringWordCount) {
-      stringWordCounts.unshift(stringWordCount);
-    // Otherwise, check and add any empty entrys to the end of the current segment
-    // before we continue.
-    } else {
-      while (stringWordCounts.length && stringWordCounts[0] === 0) {
-        segments.push('');
-        stringWordCounts.shift();
-      }
+    const [c1] = string1;
+    const [c2] = toString;
+    if (c1 === c2) {
+      appendToLast(mapping, c2);
+      string1.shift();
+      toString.shift();
+      continue; // Next char in toString
     }
 
-    return map.concat([{ segments, more: Boolean(stringWordCount) }]);
-  }, []);
-};
+    // Consume any spaces in string1
+    if (/\s/.test(c1)) {
+      string1.shift();
+      continue;
+    }
 
-function splitIntoWords (text) {
-  text = sanitize(text);
-  if (text.length === 0) return []; // Return empty array if empty string.
-  return text.split(/\s+/);
+    // Consume any spaces in string2
+    if (/\s/.test(c2)) {
+      toString.shift();
+      continue;
+    }
+
+    return false;
+  }
+
+  if (toString.length > 0) return false; // Couldn't make the full string.
+  const more = string1.length > 0;
+  if (more) strings.unshift(string1.join(''));
+  return { segments: mapping, more };
 }
 
 module.exports = function (strings, toStrings) {
-  const returnValue = [];
-  for (const string2 of toStrings) {
-    const current = [''];
-    for (const c2 of string2) {
-      // Consume any spaces in c2
-      if (/\s/.test(c2)) {
-        current[current.length - 1] = last(current) + c2;
-        continue;
-      }
-
-      const string1 = strings.shift();
-      for (const c1 of string1) {
-        console.log({ c1, string1, c2, string2, current, returnValue });
-        if (/\s/.test(c1)) continue; // Consume spaces
-        if (c1 === c2) {
-          current[current.length - 1] = last(current) + c2;
-          const remainder = string1.slice(1);
-          console.log({ remainder });
-          if (remainder.length > 0) strings.unshift(remainder); // eslint-disable-line max-depth
-          break; // Next char in toString
-        }
-
-        console.log('no match');
-
-        return false;
-      }
-    }
-
-    returnValue.push({ segments: current, more: false });
-  }
-
-  return returnValue;
+  strings = [...strings]; // FIXME: getSegments() is mutative on 'strings'
+  const result = toStrings.map(toString => getSegment(strings, toString));
+  if (result.some(r => r === false)) return false;
+  // Push any remaining whitespace on
+  if (strings.length > 0 && strings.join('').replace(/\s+/g, '').length === 0) last(result).segments = last(result).segments.concat(strings);
+  else if (strings.length > 0) return false; // But if we had non-whitespace left, we fail.
+  return !last(result).more && result;
 };
