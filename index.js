@@ -1,3 +1,5 @@
+const last = require('lodash.last');
+
 /**
  * Map one array of strings onto another array of strings.
  *
@@ -12,50 +14,62 @@
  *
  * Returns false if strings cannot be mapped onto toStrings.
  */
-module.exports = function (strings, toStrings) {
-  // validate that string matches toStrings in the first place.
-  if (sanitize(strings.join(' ')) !== sanitize(toStrings.join(' '))) {
+function appendToLast (strings, char) {
+  strings[strings.length - 1] += char;
+}
+
+/**
+ * Should return false if toString can't be made from some prefix of strings.
+ */
+function getSegment (strings, toString) {
+  let string1 = '';
+  toString = toString.split('');
+  const mapping = [];
+
+  // Go through and match up between the strings/string
+  while (toString.length > 0) {
+    // Move on to next string1 if required.
+    while (strings.length > 0 && string1.length === 0) {
+      string1 = (strings.shift() || '').split(''); // Sometimes can get null in the array
+      mapping.push('');
+    }
+
+    const [c1] = string1;
+    const [c2] = toString;
+    if (c1 === c2) {
+      appendToLast(mapping, c2);
+      string1.shift();
+      toString.shift();
+      continue; // Next char in toString
+    }
+
+    // Consume any spaces in string1
+    if (/\s/.test(c1)) {
+      string1.shift();
+      continue;
+    }
+
+    // Consume any spaces in string2
+    if (/\s/.test(c2)) {
+      toString.shift();
+      continue;
+    }
+
     return false;
   }
 
-  const stringWordCounts = strings.map(function (string) {
-    return splitIntoWords(string).length;
-  });
-  return toStrings.reduce(function (map, toString) {
-    const words = splitIntoWords(toString);
-    let stringWordCount = stringWordCounts.shift();
-    const segments = [];
-    while (stringWordCounts.length && stringWordCount < words.length) {
-      segments.push(stringWordCount ? words.splice(0, stringWordCount).join(' ') : '');
-      stringWordCount = stringWordCounts.shift();
-    }
-    stringWordCount -= words.length;
-    segments.push(words.join(' '));
-    // if words remaining, push back onto the start of the word counts list
-    if (stringWordCount) {
-      stringWordCounts.unshift(stringWordCount);
-    // otherwise, check and add any empty entrys to the end of the current segment
-    // before we continue.
-    } else {
-      while (stringWordCounts.length && stringWordCounts[0] === 0) {
-        segments.push('');
-        stringWordCounts.shift();
-      }
-    }
-    return map.concat([{ segments: segments, more: Boolean(stringWordCount) }]);
-  }, []);
+  if (toString.length > 0) return false; // Couldn't make the full string.
+  const more = string1.length > 0;
+  if (more) strings.unshift(string1.join(''));
+  return { segments: mapping, more };
+}
+
+module.exports = function (strings, toStrings) {
+  strings = [...strings]; // FIXME: getSegments() is mutative on 'strings'
+  const result = toStrings.map(toString => getSegment(strings, toString));
+  if (result.some(r => r === false)) return false;
+  // Push any remaining whitespace on
+  if (strings.length > 0 && strings.join('').replace(/\s+/g, '').length === 0) last(result).segments = last(result).segments.concat(strings);
+  else if (strings.length > 0) return false; // But if we had non-whitespace left, we fail.
+  return !last(result).more && result;
 };
-
-function sanitize (text) {
-  // replace all punctuation with a space (punctuation still denotes a gap).
-  // Note: we don't want to remove ''s which are in some words in the htk dictionary.
-  return (text || '').replace(/[^\w\s']/g, ' ')
-    .replace(/\s+/g, ' ') // collapse whitespace
-    .replace(/^\s|\s$/g, ''); // and trim
-}
-
-function splitIntoWords (text) {
-  text = sanitize(text);
-  if (!text.length) return []; // return empty array if empty string.
-  return text.split(/\s+/);
-}
