@@ -57,13 +57,6 @@ describe('lib/map', function () {
     expect(out).to.not.be.false();
   });
 
-  it('works on this bad case', function () {
-    const { sceneTexts, sentenceTexts } = require('./bad-case.json');
-    const out = map(sceneTexts, sentenceTexts);
-    const segments = out.map(mapping => mapping.segments).flat();
-    expect(out.length).to.equal(sentenceTexts.length);
-    expect(out.reduce((acc, mapping) => acc + mapping.segments.length, 0)).to.equal(sceneTexts.length);
-  });
   // FIXED by https://github.com/noblesamurai/string-delim-diff/pull/6
   it.skip('works on this bad case (simpler)', () => {
     const { sceneTexts, sentenceTexts } = {
