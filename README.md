@@ -4,11 +4,18 @@ Takes two arrays of strings, differently delimited (but identical otherwise) and
 
 [![build status](https://secure.travis-ci.org/noblesamurai/string-delim-diff.png)](http://travis-ci.org/noblesamurai/string-delim-diff)
 
+## Prerequisites
+
+```
+$ pip install pre-commit
+```
+
 ## Installation
 
 This module is installed via npm:
 
 ``` bash
+$ pre-commit install --install-hooks
 $ npm install string-delim-diff
 ```
 
